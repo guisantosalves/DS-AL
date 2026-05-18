@@ -1,0 +1,37 @@
+BigO Rules
+
+Rule 1 -> Worst Case
+Sempre levamos em consideração o Worst Case
+
+Rule 2 -> Remove constants
+when the value of input increase the constans start to be insignificant,
+so we can remove it.
+
+Rule 3 -> Different terms for inputs
+exemple:
+funcition compressBoxesTwice(boxes, boxes2) {
+	boxes.forEach(item=>{
+			console.log(item);
+		}
+	)
+	
+	boxes2.forEach(item=>{
+			console.log(item);
+		}
+	)
+}
+
+we can't considerate the two params as the same, we need to separe group of
+data. in the end it will be: O(a + b) -> because the A is a different group
+comparing to B. however if the loops were nested it would be mutiplied, 
+it would be O(a*b) -> because when nested it will be always mutiplied
+
+Rule 4 -> Drop Non dominants terms
+
+O(n + n*n)
+O(n + n^2)
+O(n^2) -> the worst case
+
+5
+O(x^2 + 3x + 100 + x/2) -> O(n^2)
+25 + 15 + 100 + 2.5

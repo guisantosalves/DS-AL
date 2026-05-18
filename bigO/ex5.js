@@ -1,0 +1,1 @@
+// pattern for O(a*b) or O(n^2) -> nested loop

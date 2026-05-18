@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big O — Guia de Referência</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #151820;
+    --surface2: #1c2030;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8eaf0;
+    --muted: #7a7f94;
+    --green: #3dd68c;
+    --blue: #5b9cf6;
+    --amber: #f5a623;
+    --red: #f07070;
+    --purple: #a78bfa;
+    --teal: #2dd4bf;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-display: 'Syne', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-display);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 48px 24px;
+  }
+
+  /* HEADER */
+  header {
+    max-width: 900px;
+    margin: 0 auto 52px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .header-title h1 {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    background: linear-gradient(135deg, #e8eaf0 30%, #5b9cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header-title p {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .header-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 6px 12px;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* LAYOUT */
+  .container { max-width: 900px; margin: 0 auto; }
+
+  /* SECTION TITLE */
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* COMPLEXITY TABLE */
+  .complexity-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+  .cx-row {
+    display: grid;
+    grid-template-columns: 130px 1fr 120px 160px;
+    gap: 0;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    transition: background .15s;
+  }
+  .cx-row:last-child { border-bottom: none; }
+  .cx-row:hover { background: var(--surface2); }
+  .cx-row.header-row {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--surface2);
+    cursor: default;
+  }
+  .cx-name {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .cx-bar-wrap {
+    padding-right: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cx-bar-bg {
+    flex: 1;
+    height: 5px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .cx-bar-fill { height: 100%; border-radius: 3px; }
+  .cx-rating {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    text-align: center;
+  }
+  .cx-example { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+
+  /* MACETES GRID */
+  .macetes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+  .macete-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: border-color .2s;
+  }
+  .macete-card:hover { border-color: var(--border2); }
+  .macete-card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .macete-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .badge-t { background: rgba(91,156,246,0.15); color: var(--blue); }
+  .badge-s { background: rgba(245,166,35,0.15); color: var(--amber); }
+  .badge-b { background: rgba(61,214,140,0.15); color: var(--green); }
+  .macete-card p { font-size: 12px; color: var(--muted); line-height: 1.65; margin-bottom: 10px; }
+
+  /* CODE BLOCK */
+  pre {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    line-height: 1.8;
+    overflow-x: auto;
+    color: #c8ccd8;
+  }
+  .kw { color: var(--purple); }
+  .hl { color: var(--green); font-weight: 700; }
+  .cm { color: #4a5068; }
+  .warn { color: var(--amber); }
+  .err { color: var(--red); }
+
+  /* EXAMPLES TABLE */
+  .examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+  .ex-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .ex-card:hover { border-color: var(--border2); }
+  .ex-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .ex-header h4 { font-size: 12px; font-weight: 600; }
+  .ex-complexities {
+    display: flex;
+    gap: 6px;
+  }
+  .cx-pill {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .pill-t { background: rgba(91,156,246,0.15); color: var(--blue); }
+  .pill-s { background: rgba(245,166,35,0.15); color: var(--amber); }
+  .ex-card pre { border: none; border-radius: 0; background: transparent; padding: 12px 16px; }
+
+  /* FOOTER */
+  footer {
+    max-width: 900px;
+    margin: 52px auto 0;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  footer span { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .cx-row { grid-template-columns: 110px 1fr; }
+    .cx-rating, .cx-example { display: none; }
+    header { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">
+    <h1>Big O<br>Notation</h1>
+    <p>Guia de referência — Time &amp; Space</p>
+  </div>
+  <div class="header-badge">versão 1.0 · guilherme</div>
+</header>
+
+<div class="container">
+
+  <!-- HIERARQUIA DE COMPLEXIDADE -->
+  <div class="section-label">hierarquia de complexidade</div>
+  <div class="complexity-table">
+    <div class="cx-row header-row">
+      <span>notação</span>
+      <span>crescimento</span>
+      <span>avaliação</span>
+      <span>exemplos</span>
+    </div>
+    <div class="cx-row">
+      <span class="cx-name" style="color:var(--green)">O(1)</span>
+      <div class="cx-bar-wrap"><div class="cx-bar-bg"><div class="cx-bar-fill" style="width:3%;background:var(--green)"></div></div></div>
+      <span class="cx-rating" style="background:rgba(61,214,140,0.12);color:var(--green)">perfeito</span>
+      <span class="cx-example">hash lookup, array[i]</span>
+    </div>
+    <div class="cx-row">
+      <span class="cx-name" style="color:#2dd4bf">O(log n)</span>
+      <div class="cx-bar-wrap"><div class="cx-bar-bg"><div class="cx-bar-fill" style="width:10%;background:#2dd4bf"></div></div></div>
+      <span class="cx-rating" style="background:rgba(45,212,191,0.12);color:#2dd4bf">ótimo</span>
+      <span class="cx-example">binary search, BST</span>
+    </div>
+    <div class="cx-row">
+      <span class="cx-name" style="color:var(--blue)">O(n)</span>
+      <div class="cx-bar-wrap"><div class="cx-bar-bg"><div class="cx-bar-fill" style="width:25%;background:var(--blue)"></div></div></div>
+      <span class="cx-rating" style="background:rgba(91,156,246,0.12);color:var(--blue)">ok</span>
+      <span class="cx-example">1 loop, linear scan</span>
+    </div>
+    <div class="cx-row">
+      <span class="cx-name" style="color:var(--purple)">O(n log n)</span>
+      <div class="cx-bar-wrap"><div class="cx-bar-bg"><div class="cx-bar-fill" style="width:40%;background:var(--purple)"></div></div></div>
+      <span class="cx-rating" style="background:rgba(167,139,250,0.12);color:var(--purple)">aceitável</span>
+      <span class="cx-example">merge sort, heap sort</span>
+    </div>
+    <div class="cx-row">
+      <span class="cx-name" style="color:var(--amber)">O(n²)</span>
+      <div class="cx-bar-wrap"><div class="cx-bar-bg"><div class="cx-bar-fill" style="width:60%;background:var(--amber)"></div></div></div>
+      <span class="cx-rating" style="background:rgba(245,166,35,0.12);color:var(--amber)">cuidado</span>
+      <span class="cx-example">loops aninhados, bubble</span>
+    </div>
+    <div class="cx-row">
+      <span class="cx-name" style="color:#f08050">O(n³)</span>
+      <div class="cx-bar-wrap"><div class="cx-bar-bg"><div class="cx-bar-fill" style="width:75%;background:#f08050"></div></div></div>
+      <span class="cx-rating" style="background:rgba(240,128,80,0.12);color:#f08050">ruim</span>
+      <span class="cx-example">3 loops, matrix mult</span>
+    </div>
+    <div class="cx-row">
+      <span class="cx-name" style="color:var(--red)">O(2ⁿ)</span>
+      <div class="cx-bar-wrap"><div class="cx-bar-bg"><div class="cx-bar-fill" style="width:90%;background:var(--red)"></div></div></div>
+      <span class="cx-rating" style="background:rgba(240,112,112,0.12);color:var(--red)">evitar</span>
+      <span class="cx-example">recursão sem memo</span>
+    </div>
+    <div class="cx-row">
+      <span class="cx-name" style="color:#c0507a">O(n!)</span>
+      <div class="cx-bar-wrap"><div class="cx-bar-bg"><div class="cx-bar-fill" style="width:100%;background:#c0507a"></div></div></div>
+      <span class="cx-rating" style="background:rgba(192,80,122,0.12);color:#c0507a">horrível</span>
+      <span class="cx-example">permutações, TSP brute</span>
+    </div>
+  </div>
+
+  <!-- MACETES -->
+  <div class="section-label">macetes — regras práticas</div>
+  <div class="macetes-grid">
+
+    <div class="macete-card">
+      <h3>Ignore constantes e termos menores <span class="macete-badge badge-b">time+space</span></h3>
+      <p>Big O é comportamento assintótico. Constantes e termos dominados somem.</p>
+      <pre>3n² + 7n + 42  →  <span class="hl">O(n²)</span>
+100n           →  <span class="hl">O(n)</span>
+n/2            →  <span class="hl">O(n)</span></pre>
+    </div>
+
+    <div class="macete-card">
+      <h3>Loops aninhados = multiplicar <span class="macete-badge badge-t">time</span></h3>
+      <p>Cada nível de loop aninhado multiplica a complexidade.</p>
+      <pre><span class="kw">for</span> i <span class="kw">in</span> n:      <span class="cm"># O(n)</span>
+  <span class="kw">for</span> j <span class="kw">in</span> n:  <span class="cm"># × O(n)</span>
+    work()      <span class="cm"># = <span class="hl">O(n²)</span></span></pre>
+    </div>
+
+    <div class="macete-card">
+      <h3>Loops sequenciais → domina o maior <span class="macete-badge badge-t">time</span></h3>
+      <p>Loops separados somam, mas o maior engole o menor.</p>
+      <pre><span class="kw">for</span> i <span class="kw">in</span> n: ...   <span class="cm"># O(n)</span>
+<span class="kw">for</span> j <span class="kw">in</span> n²: ...  <span class="cm"># O(n²)</span>
+total → <span class="hl">O(n²)</span></pre>
+    </div>
+
+    <div class="macete-card">
+      <h3>Divide por 2 a cada passo = log n <span class="macete-badge badge-t">time</span></h3>
+      <p>Espaço de busca cortado pela metade → logaritmo.</p>
+      <pre><span class="kw">while</span> left &lt;= right:
+  mid = (left+right)//2
+  ...              <span class="cm"># <span class="hl">O(log n)</span></span></pre>
+    </div>
+
+    <div class="macete-card">
+      <h3>Recursão que ramifica = exponencial <span class="macete-badge badge-t">time</span></h3>
+      <p>Sem memoization, ramificação 2x a cada chamada = O(2ⁿ).</p>
+      <pre>fib(n-1) + fib(n-2)  → <span class="warn">O(2ⁿ)</span>
+fib com memo          → <span class="hl">O(n)</span></pre>
+    </div>
+
+    <div class="macete-card">
+      <h3>Space: o que cresce com n? <span class="macete-badge badge-s">space</span></h3>
+      <p>Variáveis simples são O(1). Estruturas que crescem com n contam. Stack de recursão também.</p>
+      <pre>arr = [x <span class="kw">for</span> x <span class="kw">in</span> input] → <span class="warn">O(n)</span>
+total = 0               → <span class="hl">O(1)</span>
+merge_sort call stack   → <span class="warn">O(log n)</span></pre>
+    </div>
+
+    <div class="macete-card">
+      <h3>Inputs separados = variáveis separadas <span class="macete-badge badge-b">time+space</span></h3>
+      <p>Dois arrays de tamanhos diferentes precisam de variáveis próprias.</p>
+      <pre><span class="cm"># array a (tamanho m), b (tamanho n)</span>
+<span class="kw">for</span> x <span class="kw">in</span> a: ...  <span class="cm"># O(m)</span>
+<span class="kw">for</span> y <span class="kw">in</span> b: ...  <span class="cm"># O(n)</span>
+→ <span class="hl">O(m + n)</span>, <span class="err">não O(n)</span></pre>
+    </div>
+
+    <div class="macete-card">
+      <h3>Iterativo ≠ recursivo no space <span class="macete-badge badge-s">space</span></h3>
+      <p>Mesma lógica iterativa pode ser O(1) space vs O(n) na recursiva.</p>
+      <pre>fibonacci recursivo → <span class="warn">O(n) space</span>
+fibonacci iterativo → <span class="hl">O(1) space</span>
+<span class="cm"># (só prev + curr)</span></pre>
+    </div>
+
+  </div>
+
+  <!-- EXEMPLOS PRÁTICOS -->
+  <div class="section-label">exemplos práticos</div>
+  <div class="examples-grid">
+
+    <div class="ex-card">
+      <div class="ex-header">
+        <h4>Two Sum (hashmap)</h4>
+        <div class="ex-complexities">
+          <span class="cx-pill pill-t">T: O(n)</span>
+          <span class="cx-pill pill-s">S: O(n)</span>
+        </div>
+      </div>
+      <pre>seen = {}
+<span class="kw">for</span> i, x <span class="kw">in</span> enumerate(arr):
+  comp = target - x
+  <span class="kw">if</span> comp <span class="kw">in</span> seen:
+    <span class="kw">return</span> [seen[comp], i]
+  seen[x] = i</pre>
+    </div>
+
+    <div class="ex-card">
+      <div class="ex-header">
+        <h4>Binary Search</h4>
+        <div class="ex-complexities">
+          <span class="cx-pill pill-t">T: O(log n)</span>
+          <span class="cx-pill pill-s">S: O(1)</span>
+        </div>
+      </div>
+      <pre>l, r = 0, len(arr)-1
+<span class="kw">while</span> l &lt;= r:
+  mid = (l + r) // 2
+  <span class="kw">if</span> arr[mid] == target: ...
+  <span class="kw">elif</span> arr[mid] &lt; target: l = mid+1
+  <span class="kw">else</span>: r = mid-1</pre>
+    </div>
+
+    <div class="ex-card">
+      <div class="ex-header">
+        <h4>Merge Sort</h4>
+        <div class="ex-complexities">
+          <span class="cx-pill pill-t">T: O(n log n)</span>
+          <span class="cx-pill pill-s">S: O(n)</span>
+        </div>
+      </div>
+      <pre>merge_sort(arr):
+  mid = len(arr) // 2
+  left  = merge_sort(arr[:mid])
+  right = merge_sort(arr[mid:])
+  <span class="kw">return</span> merge(left, right)</pre>
+    </div>
+
+    <div class="ex-card">
+      <div class="ex-header">
+        <h4>Sliding Window</h4>
+        <div class="ex-complexities">
+          <span class="cx-pill pill-t">T: O(n)</span>
+          <span class="cx-pill pill-s">S: O(1) ou O(k)</span>
+        </div>
+      </div>
+      <pre>l = 0
+<span class="kw">for</span> r <span class="kw">in</span> range(len(s)):
+  <span class="cm"># expande window com s[r]</span>
+  <span class="kw">while</span> invalido:
+    <span class="cm"># encolhe pelo lado l</span>
+    l += 1</pre>
+    </div>
+
+    <div class="ex-card">
+      <div class="ex-header">
+        <h4>BFS / DFS</h4>
+        <div class="ex-complexities">
+          <span class="cx-pill pill-t">T: O(V+E)</span>
+          <span class="cx-pill pill-s">S: O(V)</span>
+        </div>
+      </div>
+      <pre><span class="cm"># V = vértices, E = arestas</span>
+queue = deque([start])
+visited = {start}
+<span class="kw">while</span> queue:
+  node = queue.popleft()
+  <span class="kw">for</span> nb <span class="kw">in</span> graph[node]: ...</pre>
+    </div>
+
+    <div class="ex-card">
+      <div class="ex-header">
+        <h4>LRU Cache</h4>
+        <div class="ex-complexities">
+          <span class="cx-pill pill-t">T: O(1)</span>
+          <span class="cx-pill pill-s">S: O(capacity)</span>
+        </div>
+      </div>
+      <pre><span class="cm"># HashMap + Doubly Linked List</span>
+get(key):
+  move_to_front(key)
+  <span class="kw">return</span> map[key]
+put(key, val):
+  <span class="kw">if</span> full: evict_lru()
+  map[key] = insert_front(val)</pre>
+    </div>
+
+    <div class="ex-card">
+      <div class="ex-header">
+        <h4>Two Pointers</h4>
+        <div class="ex-complexities">
+          <span class="cx-pill pill-t">T: O(n)</span>
+          <span class="cx-pill pill-s">S: O(1)</span>
+        </div>
+      </div>
+      <pre><span class="cm"># array ordenado, soma = target</span>
+l, r = 0, len(arr)-1
+<span class="kw">while</span> l &lt; r:
+  s = arr[l] + arr[r]
+  <span class="kw">if</span> s == target: <span class="kw">return</span> [l, r]
+  <span class="kw">elif</span> s &lt; target: l += 1
+  <span class="kw">else</span>: r -= 1</pre>
+    </div>
+
+    <div class="ex-card">
+      <div class="ex-header">
+        <h4>DP — Fibonacci</h4>
+        <div class="ex-complexities">
+          <span class="cx-pill pill-t">T: O(n)</span>
+          <span class="cx-pill pill-s">S: O(1)</span>
+        </div>
+      </div>
+      <pre><span class="cm"># bottom-up, O(1) space</span>
+prev, curr = 0, 1
+<span class="kw">for</span> _ <span class="kw">in</span> range(n-1):
+  prev, curr = curr, prev + curr
+<span class="kw">return</span> curr</pre>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <span>big-o-reference.html</span>
+  <span>time complexity · space complexity · macetes</span>
+</footer>
+
+</body>
+</html>
