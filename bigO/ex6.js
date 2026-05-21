@@ -23,4 +23,9 @@ function hasTheSameItem(arr1, arr2) {
   return false;
 }
 
-console.log(hasTheSameItem(array1, array2));
+// we can do that in another form
+function hasTheSameItem2(arr1, arr2) {
+  return arr1.some((item) => arr2.includes(item));
+}
+
+console.log(hasTheSameItem2(array1, array2));
