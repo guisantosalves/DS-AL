@@ -24,10 +24,11 @@ class LNode {
   constructor(value) {
     this.value = value;
     this.next = null;
+    this.prev = null;
   }
 }
 
-class LinkedList {
+class DoublyLinkedList {
   constructor(value) {
     // in the beggining it will point to null
     // the tail in the begginig will point to the head too
@@ -67,6 +68,8 @@ class LinkedList {
   append(value) {
     const newNode = new LNode(value);
 
+    // in that time, tail is the prev one
+    newNode.prev = this.tail;
     // nesse ponto ele já entra na cadeia
     this.tail.next = newNode;
     // tail se torna ele na cadeia
@@ -78,6 +81,7 @@ class LinkedList {
     const newNode = new LNode(value);
 
     newNode.next = this.head; // aponta para o current in that time
+    this.head.prev = newNode;
     this.head = newNode; // head become the newNode
     this.length++;
   }
@@ -99,7 +103,14 @@ class LinkedList {
         const newNode = new LNode(value);
         // auxnode -> current
         newNode.next = auxNode;
+        // pointing to the prev
+        newNode.prev = prevNode;
+
+        // prev point for the new one inserted
         prevNode.next = newNode;
+
+        // the old (current) one .prev will point to the new inserted
+        auxNode.prev = newNode;
         return;
       }
       prevNode = auxNode;
@@ -144,19 +155,18 @@ class LinkedList {
 
     return arr;
   }
-
-  tranverseToIndex(index) {}
 }
 
-const myLinkedList = new LinkedList(10);
+const myLinkedList = new DoublyLinkedList(10);
 
 myLinkedList.append(5);
 myLinkedList.append(65);
-myLinkedList.append(80);
-myLinkedList.prepend(33);
+myLinkedList.prepend(1);
+// myLinkedList.append(80);
+// myLinkedList.prepend(33);
 
-myLinkedList.insert(0, 666);
+myLinkedList.insert(3, 666);
 
 console.log(myLinkedList.printList());
-myLinkedList.remove(5);
-console.log(myLinkedList.printList());
+// myLinkedList.remove(1);
+console.log(myLinkedList);
