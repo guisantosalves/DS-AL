@@ -123,6 +123,9 @@ class DoublyLinkedList {
   remove(index) {
     if (index == 0) {
       // head become the next one
+      let nextOne = this.head.next;
+      nextOne.prev = null; // the head will point null to prev
+
       this.head = this.head.next;
       return;
     }
@@ -135,6 +138,8 @@ class DoublyLinkedList {
         // auxnode -> current
         // prevnode jump into the (from the current)next
         prevNode.next = auxNode.next;
+        // avoid the one removed
+        auxNode.prev = prevNode; // it will point to the prev correctly
         return;
       }
       prevNode = auxNode;
@@ -155,6 +160,42 @@ class DoublyLinkedList {
 
     return arr;
   }
+
+  tranverseToIndex(index) {
+    let currNode = this.head;
+    let id = 0;
+    while (currNode != null) {
+      if (id == index) {
+        return currNode;
+      }
+
+      currNode = currNode.next;
+      id++;
+    }
+    console.log("index out of range");
+  }
+
+  reverse() {
+    if (!this.head.next) {
+      return this.head;
+    }
+
+    let first = this.head;
+    this.tail = this.head;
+    let second = first.next;
+
+    while (second) {
+      const temp = second.next;
+      second.next = first;
+      first = second;
+      second = temp;
+    }
+
+    this.head.next = null;
+    this.head = first;
+
+    return this.printList();
+  }
 }
 
 const myLinkedList = new DoublyLinkedList(10);
@@ -168,5 +209,10 @@ myLinkedList.prepend(1);
 myLinkedList.insert(3, 666);
 
 console.log(myLinkedList.printList());
-// myLinkedList.remove(1);
-console.log(myLinkedList);
+// myLinkedList.remove(0);
+// console.log(myLinkedList.printList());
+// console.log(myLinkedList.tranverseToIndex(0));
+
+console.log(myLinkedList.reverse());
+
+// console.log(myLinkedList.tranverseToIndex(3));

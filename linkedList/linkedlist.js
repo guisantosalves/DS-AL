@@ -145,7 +145,19 @@ class LinkedList {
     return arr;
   }
 
-  tranverseToIndex(index) {}
+  tranverseToIndex(index) {
+    let currNode = this.head;
+    let id = 0;
+    while (currNode != null) {
+      if (id == index) {
+        return currNode;
+      }
+
+      currNode = currNode.next;
+      id++;
+    }
+    console.log("index out of range");
+  }
 }
 
 const myLinkedList = new LinkedList(10);
@@ -157,6 +169,8 @@ myLinkedList.prepend(33);
 
 myLinkedList.insert(0, 666);
 
+// console.log(myLinkedList.printList());
+// myLinkedList.remove(5);
 console.log(myLinkedList.printList());
-myLinkedList.remove(5);
-console.log(myLinkedList.printList());
+
+console.log(myLinkedList.tranverseToIndex(2));
