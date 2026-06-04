@@ -187,6 +187,7 @@ class DoublyLinkedList {
     while (second) {
       const temp = second.next;
       second.next = first;
+      second.prev = temp;
       first = second;
       second = temp;
     }
@@ -215,4 +216,5 @@ console.log(myLinkedList.printList());
 
 console.log(myLinkedList.reverse());
 
+console.log(myLinkedList.tranverseToIndex(1));
 // console.log(myLinkedList.tranverseToIndex(3));

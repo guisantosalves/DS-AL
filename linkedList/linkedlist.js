@@ -158,6 +158,28 @@ class LinkedList {
     }
     console.log("index out of range");
   }
+
+  reverse() {
+    if (!this.head.next) {
+      return this.head;
+    }
+
+    let first = this.head;
+    this.tail = this.head;
+    let second = this.head.next;
+
+    while (second) {
+      const temp = second.next; // third
+      second.next = first; // invert the pointer for the previous
+      first = second;
+      second = temp;
+    }
+
+    this.head.next = null; // clean the next from the last one
+    this.head = first; // point for the last one in the loop, the first of the order at the moment
+
+    return this.printList();
+  }
 }
 
 const myLinkedList = new LinkedList(10);
@@ -172,5 +194,4 @@ myLinkedList.insert(0, 666);
 // console.log(myLinkedList.printList());
 // myLinkedList.remove(5);
 console.log(myLinkedList.printList());
-
-console.log(myLinkedList.tranverseToIndex(2));
+console.log(myLinkedList.reverse());
